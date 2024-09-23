@@ -24,7 +24,7 @@ public class ProductosService {
         return productosRepository.findById(id).orElse(null);
     }
 
-    public boolean actualizarProducto(Long id, Productos producto) {
+    public boolean updateProducto(Long id, Productos producto) {
         Productos productoExistente = productosRepository.findById(id).orElse(null);
 
         if (productoExistente != null) {

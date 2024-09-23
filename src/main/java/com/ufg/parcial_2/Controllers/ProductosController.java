@@ -4,14 +4,14 @@ import com.ufg.parcial_2.DTO.APIResponses;
 import com.ufg.parcial_2.Models.Productos;
 import com.ufg.parcial_2.Services.ProductosService;
 
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
 @RestController
-@RequestMapping("API/Usuarios")
+@RequestMapping("API/Productos")
 public class ProductosController {
     @Autowired
     private ProductosService productosService;
@@ -20,13 +20,7 @@ public class ProductosController {
     public ResponseEntity<APIResponses> getAll() {
         try {
             List<Productos> productos = productosService.getAllProductos();
-
-            if(!productos.isEmpty()) {
-                return ResponseEntity.ok(new APIResponses(1, null, productos));
-            }
-            else {
-                return ResponseEntity.ok(new APIResponses(0, "Error al obtener el listado de productos.", null));
-            }
+            return ResponseEntity.ok(new APIResponses(1, null, productos));
         }
         catch(Exception e) {
             return ResponseEntity.ok(new APIResponses(0, "Error al obtener el listado de productos: " + e.getMessage(), null));
@@ -51,6 +45,7 @@ public class ProductosController {
     public ResponseEntity<APIResponses> save(@RequestBody Productos producto) {
         try {
             if (producto != null) {
+                producto.setFechaCreacion(LocalDate.now());
                 Productos newProducto = productosService.saveProducto(producto);
 
                 if (newProducto.getIdProducto() > 0) {
@@ -62,6 +57,27 @@ public class ProductosController {
             }
             else {
                 return ResponseEntity.ok(new APIResponses(0, "Debe de brindar un producto válido a guardar.", null));
+            }
+        }
+        catch (Exception e) {
+            return ResponseEntity.ok(new APIResponses(0, "Error al realizar la operación: " + e.getMessage(), null));
+        }
+    }
+
+    @PutMapping
+    public ResponseEntity<APIResponses> update(@RequestBody Productos producto) {
+        try {
+            if (producto != null) {
+                producto.setFechaModificacion(LocalDate.now());
+                if (productosService.updateProducto(producto.getIdProducto(), producto)) {
+                    return ResponseEntity.ok(new APIResponses(1, "Producto modificado correctamente.", null));
+                }
+                else {
+                    return ResponseEntity.ok(new APIResponses(0, "Hubo un error al modificar el producto.", null));
+                }
+            }
+            else {
+                return ResponseEntity.ok(new APIResponses(0, "Debe de brindar un producto válido a modificar.", null));
             }
         }
         catch (Exception e) {

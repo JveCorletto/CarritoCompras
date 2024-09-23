@@ -81,7 +81,6 @@ VALUES  ('Pendiente de pago'),
 CREATE TABLE Compras(
     IdCompra BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     IdEstadoCompra INT NOT NULL,
-    IdComprobante BIGINT NOT NULL,
     IdUsuario BIGINT NOT NULL,
 
     FechaCompra DATE NOT NULL,
