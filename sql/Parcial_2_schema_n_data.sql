@@ -1,15 +1,17 @@
+DROP DATABASE IF EXISTS Parcial_2;
+
 CREATE DATABASE Parcial_2;
 
 USE parcial_2;
 
 CREATE TABLE Estados(
-	IdEstado INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    IdEstado INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     Estado VARCHAR(255) NOT NULL
 );
 
 INSERT INTO Estados (Estado)
 VALUES 	('Activo'),
-		('Inactivo');
+        ('Inactivo');
 
 CREATE TABLE Roles (
     IdRol INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -20,25 +22,27 @@ CREATE TABLE Roles (
 
 INSERT INTO Roles (IdEstado, Rol)
 VALUES 	(1, 'Administrador'),
-		(1, 'Usuario');
+		(1, 'Empleado'),
+        (1, 'Usuario');
 
 CREATE TABLE Usuarios(
-	IdUsuario BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    IdEstado INT NOT NULL,
-    IdRol INT NOT NULL,
-    Nombre VARCHAR(255) NOT NULL,
-    Usuario VARCHAR(255) NOT NULL,
-    Contrasenia VARCHAR(255) NOT NULL,
-    CONSTRAINT FK_Usuarios_Estados FOREIGN KEY (IdEstado) REFERENCES Estados(IdEstado),
-    CONSTRAINT FK_Usuarios_Roles FOREIGN KEY (IdRol) REFERENCES Roles(IdRol)
+     IdUsuario BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+     IdEstado INT NOT NULL,
+     IdRol INT NOT NULL,
+     Nombre VARCHAR(255) NOT NULL,
+     Usuario VARCHAR(255) NOT NULL,
+     Contrasenia VARCHAR(255) NOT NULL,
+
+     CONSTRAINT FK_Usuarios_Estados FOREIGN KEY (IdEstado) REFERENCES Estados(IdEstado),
+     CONSTRAINT FK_Usuarios_Roles FOREIGN KEY (IdRol) REFERENCES Roles(IdRol)
 );
 
 INSERT INTO Usuarios (IdEstado, IdRol, Nombre, Usuario, Contrasenia)
-VALUES 	(1, 1, 'Javier', 'Javier', '12345'),
-		(1, 2, 'Andre', 'Andre', '12345');
+VALUES 	(1, 1, 'Javier', 'Javier', '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4'),
+        (1, 2, 'Andre', 'Andre', '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4');
 
 CREATE TABLE Categorias(
-	IdCategoria INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    IdCategoria INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     Categoria VARCHAR(255) NOT NULL
 );
 
@@ -52,7 +56,7 @@ CREATE TABLE Productos(
     IdCategoria INT NOT NULL,
     Producto VARCHAR(255) NOT NULL,
     Descripcion VARCHAR(255) NOT NULL,
-    Imagen BLOB NULL,
+    Imagen VARCHAR(255) NULL,
     Precio DOUBLE(14,2) NOT NULL,
     Stock INT NOT NULL,
 
@@ -78,12 +82,13 @@ CREATE TABLE Compras(
     IdCompra BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     IdEstadoCompra INT NOT NULL,
     IdComprobante BIGINT NOT NULL,
+    IdUsuario BIGINT NOT NULL,
+
     FechaCompra DATE NOT NULL,
-    UsuarioCompra BIGINT NOT NULL,
-    TotalCompra DOUBLE(14,2) NOT NULL,
+    TotalCompra DOUBLE(14,2) NULL,
 
     CONSTRAINT FK_Compras_EstadosCompras FOREIGN KEY (IdEstadoCompra) REFERENCES EstadosCompras(IdEstadoCompra),
-    CONSTRAINT FK_Compras_Usuarios FOREIGN KEY (UsuarioCompra) REFERENCES Usuarios(IdUsuario)
+    CONSTRAINT FK_Compras_Usuarios FOREIGN KEY (IdUsuario) REFERENCES Usuarios(IdUsuario)
 );
 
 CREATE TABLE DetallesCompras(
