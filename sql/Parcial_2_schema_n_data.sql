@@ -111,3 +111,5 @@ CREATE TABLE ComprobantesCompras(
 
     CONSTRAINT FK_ComprobantesCompras_Compras FOREIGN KEY (IdCompra) REFERENCES Compras(IdCompra)
 );
+
+SELECT * FROM Usuarios

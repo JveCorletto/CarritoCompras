@@ -2,9 +2,8 @@ package com.ufg.parcial_2.Services;
 import com.ufg.parcial_2.Models.Usuarios;
 
 import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
-import com.ufg.parcial_2.Helpers.PasswordUtils;
+import com.ufg.parcial_2.Security.PasswordUtils;
 import com.ufg.parcial_2.Repositories.UsuariosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,7 +17,7 @@ public class UsuariosService {
     }
 
     public Usuarios getUsuarioById(Long id) {
-        return usuarioRepository.getReferenceById(id);
+        return usuarioRepository.findById(id).orElse(null);
     }
 
     public Usuarios saveUsuario(Usuarios usuario) {
@@ -31,22 +30,7 @@ public class UsuariosService {
         usuarioRepository.deleteById(id);
     }
 
-    public Usuarios login(String usuario, String contraseniaIngresada) {
-        Optional<Usuarios> usuarioEncontrado = usuarioRepository.findByUsuario(usuario);
-
-        if (usuarioEncontrado.isPresent()) {
-            Usuarios usuarioGuardado = usuarioEncontrado.get();
-            String contraseniaAlmacenada = usuarioGuardado.getContrasenia();
-
-            if (PasswordUtils.hashPassword(contraseniaIngresada).equals(contraseniaAlmacenada)) {
-                return usuarioGuardado;
-            }
-        }
-
-        return null;
-    }
-
-    public Optional<Usuarios> findByUsuario(String usuario) {
+    public Usuarios findByUsuario(String usuario) {
         return usuarioRepository.findByUsuario(usuario);
     }
 }

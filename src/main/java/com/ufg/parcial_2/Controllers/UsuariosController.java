@@ -5,6 +5,7 @@ import com.ufg.parcial_2.DTO.LoginRequest;
 import com.ufg.parcial_2.Services.UsuariosService;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
@@ -38,22 +39,25 @@ public class UsuariosController {
     public ResponseEntity<APIResponses> getById(@PathVariable Long id) {
         try {
             Usuarios usuario = usuarioService.getUsuarioById(id);
-            if (usuario != null) {
+
+            if(usuario != null) {
                 return ResponseEntity.ok(new APIResponses(1, null, usuario));
-            } else {
+            }
+            else {
                 return ResponseEntity.ok(new APIResponses(0, "No se encontró el usuario", null));
             }
-        } catch (Exception e) {
-            return ResponseEntity.ok(new APIResponses(0, "Error al obtener el usuario: " + e.getMessage(), null));
+        }
+        catch (NoSuchElementException e) {
+            return ResponseEntity.ok(new APIResponses(0, "No se encontró el usuario. " + e.getMessage(), null));
         }
     }
 
     @GetMapping("/getByName")
     public ResponseEntity<APIResponses> getByName(@RequestBody String usuario) {
         try {
-            Optional<Usuarios> usuariosList = usuarioService.findByUsuario(usuario);
+            Usuarios usuariosList = usuarioService.findByUsuario(usuario);
 
-            if(usuariosList.isEmpty()) {
+            if(usuariosList != null) {
                 return ResponseEntity.ok(new APIResponses(1, null, usuariosList));
             }
             else {
@@ -69,7 +73,7 @@ public class UsuariosController {
     public ResponseEntity<APIResponses> save(@RequestBody Usuarios usuario) {
         try {
             if (usuario != null) {
-                if (usuarioService.findByUsuario(usuario.getUsuario()).isEmpty()) {
+                if (usuarioService.findByUsuario(usuario.getUsuario()) == null) {
                     Usuarios newUsuario = usuarioService.saveUsuario(usuario);
 
                     if (newUsuario.getIdUsuario() > 0) {
@@ -97,7 +101,8 @@ public class UsuariosController {
         try {
             usuarioService.deleteUsuario(id);
 
-            if (usuarioService.getUsuarioById(id) == null) {
+            Usuarios deletedUser = usuarioService.getUsuarioById(id);
+            if (deletedUser == null) {
                 return ResponseEntity.ok(new APIResponses(1, "Usuario eliminado correctamente.", null));
             }
             else {
@@ -106,23 +111,6 @@ public class UsuariosController {
         }
         catch (Exception e) {
             return ResponseEntity.ok(new APIResponses(0, "Error al realizar la operación: " + e.getMessage(), null));
-        }
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<APIResponses> login(@RequestBody LoginRequest loginRequest) {
-        try {
-            Usuarios loggedUser = usuarioService.login(loginRequest.getUsuario(), loginRequest.getContrasenia());
-
-            if (loggedUser != null) {
-                return ResponseEntity.ok(new APIResponses(1, "Bienvenid@ " + loggedUser.getNombre(), null));
-            }
-            else {
-                return ResponseEntity.ok(new APIResponses(0, "Datos incorrectos, intente nuevamente", null));
-            }
-        }
-        catch(Exception e) {
-            return ResponseEntity.ok(new APIResponses(0, "Error iniciar sesión: " + e.getMessage(), null));
         }
     }
 }
