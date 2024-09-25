@@ -1,13 +1,14 @@
 package com.ufg.parcial_2.Controllers;
-import com.ufg.parcial_2.DTO.APIResponses;
+
 import com.ufg.parcial_2.Models.Usuarios;
-import com.ufg.parcial_2.DTO.LoginRequest;
+import com.ufg.parcial_2.DTO.APIResponses;
 import com.ufg.parcial_2.Services.UsuariosService;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
+import java.security.Principal;
 import java.util.NoSuchElementException;
-import java.util.Optional;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,31 +70,17 @@ public class UsuariosController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<APIResponses> save(@RequestBody Usuarios usuario) {
-        try {
-            if (usuario != null) {
-                if (usuarioService.findByUsuario(usuario.getUsuario()) == null) {
-                    Usuarios newUsuario = usuarioService.saveUsuario(usuario);
+    @GetMapping("/getMyUser")
+    @ResponseBody
+    public Map<String, Object> obtenerUsuario(Principal principal) {
+        String username = principal.getName();
+        Usuarios usuario = usuarioService.findByUsuario(username);
 
-                    if (newUsuario.getIdUsuario() > 0) {
-                        return ResponseEntity.ok(new APIResponses(1, "Usuario creado correctamente.", null));
-                    }
-                    else {
-                        return ResponseEntity.ok(new APIResponses(0, "Hubo un error al crear el usuario.", null));
-                    }
-                }
-                else {
-                    return ResponseEntity.ok(new APIResponses(0, "Usuario ya existente.", null));
-                }
-            }
-            else {
-                return ResponseEntity.ok(new APIResponses(0, "Debe de brindar un usuario válido a guardar.", null));
-            }
-        }
-        catch (Exception e) {
-            return ResponseEntity.ok(new APIResponses(0, "Error al realizar la operación: " + e.getMessage(), null));
-        }
+        Map<String, Object> userData = new HashMap<>();
+        userData.put("userId", usuario.getIdUsuario());
+        userData.put("username", usuario.getNombre());
+
+        return userData;
     }
 
     @DeleteMapping("/{id}")

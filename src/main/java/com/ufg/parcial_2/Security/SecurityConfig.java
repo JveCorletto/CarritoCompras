@@ -35,8 +35,8 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/login", "/perform_login").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/vendor/**", "/images/**").permitAll()
+                        .requestMatchers("/login", "/perform_login", "/register").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -47,6 +47,14 @@ public class SecurityConfig {
 
                         .defaultSuccessUrl("/home", true)
                         .failureUrl("/login?error=true")
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .deleteCookies("JSESSIONID")
                         .permitAll()
                 )
                 .addFilterAt(customAuthFilter, UsernamePasswordAuthenticationFilter.class)  // Register custom filter

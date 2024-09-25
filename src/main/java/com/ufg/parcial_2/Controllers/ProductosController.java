@@ -4,8 +4,9 @@ import com.ufg.parcial_2.DTO.APIResponses;
 import com.ufg.parcial_2.Models.Productos;
 import com.ufg.parcial_2.Services.ProductosService;
 
-import java.time.LocalDate;
 import java.util.List;
+import java.time.LocalDate;
+import java.security.Principal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +43,11 @@ public class ProductosController {
     }
 
     @PostMapping
-    public ResponseEntity<APIResponses> save(@RequestBody Productos producto) {
+    public ResponseEntity<APIResponses> save(@RequestBody Productos producto, Principal principal) {
         try {
             if (producto != null) {
+                producto.setLogicalDeleted(false);
+                producto.setUsuarioCreacion(principal.getName());
                 producto.setFechaCreacion(LocalDate.now());
                 Productos newProducto = productosService.saveProducto(producto);
 
@@ -65,9 +68,10 @@ public class ProductosController {
     }
 
     @PutMapping
-    public ResponseEntity<APIResponses> update(@RequestBody Productos producto) {
+    public ResponseEntity<APIResponses> update(@RequestBody Productos producto, Principal principal) {
         try {
             if (producto != null) {
+                producto.setUsuarioModificacion(principal.getName());
                 producto.setFechaModificacion(LocalDate.now());
                 if (productosService.updateProducto(producto.getIdProducto(), producto)) {
                     return ResponseEntity.ok(new APIResponses(1, "Producto modificado correctamente.", null));
@@ -88,9 +92,7 @@ public class ProductosController {
     @DeleteMapping("/{id}")
     public ResponseEntity<APIResponses> delete(@PathVariable Long id) {
         try {
-            productosService.deleteProducto(id);
-
-            if (productosService.getProductoById(id) == null) {
+            if (productosService.deleteProducto(id)) {
                 return ResponseEntity.ok(new APIResponses(1, "Producto eliminado correctamente.", null));
             }
             else {

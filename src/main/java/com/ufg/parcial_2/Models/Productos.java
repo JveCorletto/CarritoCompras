@@ -37,6 +37,9 @@ public class Productos {
     @Column(nullable = false, name = "Stock")
     private int Stock;
 
+    @Column(nullable = false, name = "LogicalDeleted")
+    private boolean logicalDeleted;
+
     // Auditoría
     @Column(nullable = false, name = "UsuarioCreacion")
     private String UsuarioCreacion;

@@ -13,7 +13,7 @@ public class ProductosService {
     private ProductosRepository productosRepository;
 
     public List<Productos> getAllProductos() {
-        return productosRepository.findAll();
+        return productosRepository.findByLogicalDeletedFalse();
     }
 
     public Productos saveProducto(Productos producto) {
@@ -46,8 +46,17 @@ public class ProductosService {
         }
     }
 
-    public void deleteProducto(Long id) {
-        productosRepository.deleteById(id);
+    public boolean deleteProducto(Long id) {
+        Productos productoExistente = productosRepository.findById(id).orElse(null);
+
+        if (productoExistente != null) {
+            productoExistente.setLogicalDeleted(true);
+            productosRepository.save(productoExistente);
+
+            return true;
+        }
+
+        return false;
     }
 
     public List<Productos> listarProductos() {

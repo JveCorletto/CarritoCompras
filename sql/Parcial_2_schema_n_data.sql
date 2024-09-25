@@ -59,6 +59,7 @@ CREATE TABLE Productos(
     Imagen VARCHAR(255) NULL,
     Precio DOUBLE(14,2) NOT NULL,
     Stock INT NOT NULL,
+    LogicalDeleted BIT NOT NULL DEFAULT (0),
 
     -- CAMPOS DE AUDITORIA
     UsuarioCreacion VARCHAR(255) NOT NULL,
