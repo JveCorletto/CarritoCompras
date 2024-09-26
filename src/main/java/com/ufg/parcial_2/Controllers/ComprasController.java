@@ -162,13 +162,13 @@ public class ComprasController {
 
         Optional<Compras> compraOpt = comprasRepository.getActiveCompra(usuario.getIdUsuario());
         if (compraOpt.isPresent()) {
+            Double totalCompra = 0.00;
             Compras compra = compraOpt.get();
 
             MyKartDTO myKartDTO = new MyKartDTO();
             myKartDTO.setIdCompra(compra.getIdCompra());
             myKartDTO.setEstadoCompra(compra.getEstadoCompra().getEstadoCompra());
-            myKartDTO.setUsuarioCompra(compra.getIdUsuario().getUsuario());
-            myKartDTO.setFechaCompra(compra.getFechaCompra());
+            myKartDTO.setFechaCompra(LocalDate.now());
 
             List<MyKartDetails> kartDetailsList = new ArrayList<>();
             for (DetallesCompras detalle : detallesComprasRepository.findByIdCompra(compra.getIdCompra())) {
@@ -180,13 +180,44 @@ public class ComprasController {
                 kartDetails.setPrecioUnitario(detalle.getPrecioUnitario());
                 kartDetails.setSubTotal(detalle.getSubTotal());
                 kartDetailsList.add(kartDetails);
+
+                totalCompra += kartDetails.getSubTotal();
             }
 
+            myKartDTO.setTotalCompra(totalCompra);
             myKartDTO.setKartDetails(kartDetailsList);
             return ResponseEntity.ok(new APIResponses(1, null, myKartDTO));
         }
         else {
-            return ResponseEntity.ok(new APIResponses(0, "No se pudo obtener el detalle del carrito.", null));
+            return ResponseEntity.ok(new APIResponses(0, "Tu carrito está vacio.", null));
+        }
+    }
+
+    @GetMapping("/PayKart")
+    public ResponseEntity<APIResponses> PayKart(Principal principal) {
+        String username = principal.getName();
+        Usuarios usuario = usuariosRepository.findByUsuario(username);
+        if (usuario == null) {
+            return ResponseEntity.ok(new APIResponses(0, "Error al identificar el usuario", null));
+        }
+
+        Optional<Compras> compraOpt = comprasRepository.getActiveCompra(usuario.getIdUsuario());
+        if (compraOpt.isPresent()) {
+            Double totalCompra = 0.00;
+            Compras compra = compraOpt.get();
+            for (DetallesCompras detalle : detallesComprasRepository.findByIdCompra(compra.getIdCompra())) {
+                totalCompra += detalle.getSubTotal();
+            }
+
+            if (comprasService.markAsPayed(compra.getIdCompra(), totalCompra)) {
+                return ResponseEntity.ok(new APIResponses(1, "Compra realizada exitosamente", null));
+            }
+            else {
+                return ResponseEntity.ok(new APIResponses(0, "Hubo un error al pagar su carrito, intenta nuevamente.", null));
+            }
+        }
+        else {
+            return ResponseEntity.ok(new APIResponses(0, "No se pudo obtener la información del carrito, intenta nuevamente.", null));
         }
     }
 }

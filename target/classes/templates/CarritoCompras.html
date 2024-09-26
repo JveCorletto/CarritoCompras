@@ -114,18 +114,47 @@
 
             <!-- Begin Page Content -->
             <div class="container-fluid">
-                <!-- Page Heading -->
-                <div class="subheader py-6 py-lg-8 subheader-transparent" id="kt_subheader">
-                    <div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
-                        <div class="d-flex align-items-center flex-wrap mr-1">
-                            <div class="d-flex align-items-baseline flex-wrap mr-5">
-                                <h2 class="text-dark font-weight-bold my-1 mr-5">Productos en Mi Carrito</h2>
+                <div class="container">
+                    <div class="card shadow mb-4">
+                        <!-- Card Header - Accordion -->
+                        <a href="#myKart" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="myKart" id="btnKart">
+                            <h3 class="m-0 font-weight-bold text-primary">Productos en Mi Carrito</h3>
+                        </a>
+                        <!-- Card Content - Collapse -->
+                        <div class="collapse show" id="myKart">
+                            <div class="card-body">
+                                <div class="row" id="KartHeader"></div><hr class="font-weight-bolder">
+
+                                <!-- Encabezados del Carrito-->
+                                <div class="row">
+                                    <div class="col-2 d-flex justify-content-center align-items-center">
+                                        <b class="font-weight-bolder" style="font-size: medium;">Imagen del Producto</b>
+                                    </div>
+                                    <div class="col-3 d-flex justify-content-center align-items-center">
+                                        <b class="font-weight-bolder" style="font-size: medium;">Nombre del Producto</b>
+                                    </div>
+                                    <div class="col-2 d-flex justify-content-center align-items-center">
+                                        <b class="font-weight-bolder" style="font-size: medium;">Precio del Producto</b>
+                                    </div>
+                                    <div class="col-2 d-flex justify-content-center align-items-center">
+                                        <b class="font-weight-bolder" style="font-size: medium;">Cantidad de Productos</b>
+                                    </div>
+                                    <div class="col-3 d-flex justify-content-center align-items-center">
+                                        <b class="font-weight-bolder" style="font-size: medium;">SubTotal</b>
+                                    </div>
+                                </div><hr class="font-weight-bolder">
+
+                                <div id="KartItems"></div><hr class="font-weight-bolder">
+                                <div id="kartFooter"></div><br>
+                                <div class="row">
+                                    <div class="col-5 offset-7 d-flex justify-content-center align-items-center">
+                                        <button class="btn btn-primary w-100" id="btnPagar">Pagar <i class="fas fa-money-bill-wave"></i></button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <hr/>
-
             </div>
             <!-- End Page Content -->
 

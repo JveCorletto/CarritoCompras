@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+
 @Service
 public class ComprasService {
     @Autowired
@@ -29,14 +31,16 @@ public class ComprasService {
     }
 
     @Transactional
-    public boolean markAsPayed(Long id) {
+    public boolean markAsPayed(Long id, Double totalCompra) {
         EstadosCompras estadoPagado = estadosComprasRepository.findById(2)
                 .orElseThrow(() -> new RuntimeException("Estado 'Pagada' no encontrado"));
 
         Compras compraExistente = comprasRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Compra N° " + id + " no encontrada"));
 
+        compraExistente.setTotalCompra(totalCompra);
         compraExistente.setEstadoCompra(estadoPagado);
+        compraExistente.setFechaCompra(LocalDate.now());
         comprasRepository.save(compraExistente);
         return true;
     }

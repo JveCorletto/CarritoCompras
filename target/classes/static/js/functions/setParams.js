@@ -41,6 +41,7 @@ function getProductsOnKart() {
                 localStorage.setItem("productsOnKart", productsOnKart);
             } else {
                 productsOnKart = 0;
+                localStorage.setItem("productsOnKart", productsOnKart);
             }
 
             let carritoCounter = $('#carritoCounter');

@@ -10,7 +10,8 @@ import java.time.LocalDate;
 public class MyKartDTO {
     private Long idCompra;
     private String estadoCompra;
-    private String usuarioCompra;
     private LocalDate fechaCompra;
+    private Double totalCompra;
+
     List<MyKartDetails> KartDetails;
 }
