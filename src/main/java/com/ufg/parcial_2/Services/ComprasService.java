@@ -20,10 +20,6 @@ public class ComprasService {
     @Autowired
     private DetallesComprasRepository detallesComprasRepository;
 
-    public Compras saveCompra(Compras compra) {
-        return comprasRepository.save(compra);
-    }
-
     public Compras getCompraById(Long id) {
         return comprasRepository.findById(id).orElse(null);
     }

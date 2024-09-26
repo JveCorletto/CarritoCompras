@@ -14,8 +14,8 @@ public class EstadosCompras {
     @Id
     @Column(name = "IdEstadoCompra")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int IdEstadoCompra;
+    private int idEstadoCompra;
 
     @Column(nullable = false, name = "EstadoCompra")
-    private String EstadoCompra;
+    private String estadoCompra;
 }

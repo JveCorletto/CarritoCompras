@@ -30,9 +30,29 @@ function getMyUser() {
 }
 
 function getProductsOnKart() {
-    let productsOnKart = localStorage.getItem("productsOnKart") ? localStorage.getItem("productsOnKart") : 0;
-    let carritoCounter = $('#carritoCounter');
-    carritoCounter.text(productsOnKart);
+    let productsOnKart = localStorage.getItem("productsOnKart") ? parseInt(localStorage.getItem("productsOnKart")) : 0;
+
+    $.ajax({
+        url: '/API/Compras/GetProductsOnKart',
+        type: 'GET',
+        success: function(response) {
+            if (response.status == 1) {
+                productsOnKart = parseInt(response.data);
+                localStorage.setItem("productsOnKart", productsOnKart);
+            } else {
+                productsOnKart = 0;
+            }
+
+            let carritoCounter = $('#carritoCounter');
+            carritoCounter.text(productsOnKart);
+        },
+        error: function(xhr, status, error) {
+            productsOnKart = 0;
+
+            let carritoCounter = $('#carritoCounter');
+            carritoCounter.text(productsOnKart);
+        }
+    });
 }
 
 function paginate(id) {

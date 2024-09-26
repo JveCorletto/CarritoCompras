@@ -16,23 +16,19 @@ public class Compras {
     @Id
     @Column(name = "IdCompra")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long IdCompra;
+    private Long idCompra;
 
     @ManyToOne
     @JoinColumn(name = "IdEstadoCompra", nullable = false)
-    private EstadosCompras EstadoCompra;
-
-    @OneToOne
-    @JoinColumn(name = "IdComprobante", nullable = false)
-    private ComprobantesCompras Comprobante;
+    private EstadosCompras estadoCompra;
 
     @ManyToOne
     @JoinColumn(name = "IdUsuario", nullable = false)
-    private Usuarios IdUsuario;
+    private Usuarios idUsuario;
 
     @Column(nullable = false, name = "FechaCompra")
-    private LocalDate FechaCompra;
+    private LocalDate fechaCompra;
 
-    @Column(nullable = false, name = "TotalCompra")
-    private Double TotalCompra;
+    @Column(nullable = true, name = "TotalCompra")
+    private Double totalCompra;
 }

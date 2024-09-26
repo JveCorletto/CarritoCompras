@@ -76,3 +76,50 @@ function getProduct(IdProducto) {
         }
     });
 }
+
+$('#btnAddToKart').click(function () {
+    if ($('#IdProducto').val() > 0 && $('#Cantidad').val() > 0) {
+        var Obj = {
+            idProducto: parseInt($('#IdProducto').val()),
+            cantidad: parseInt($('#Cantidad').val())
+        };
+
+        $.ajax({
+            type: 'POST',
+            url: '/API/Compras/AddToKart',
+            contentType: "Application/json",
+            data: JSON.stringify(Obj),
+            success: function (response) {
+                if (response.status == 1) {
+                    Swal.fire({
+                        title: 'Exito',
+                        icon: "success",
+                        html: response.message,
+                        timer: 1000,
+                        timerProgressBar: true,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        },
+                    }).then(function () {
+                        $('#addToKartModal').modal('hide');
+                        getProductsOnKart();
+                    });
+                }
+                else {
+                    Swal.fire({
+                        title: 'Error',
+                        icon: "warning",
+                        html: response.message,
+                        timer: 1000,
+                        timerProgressBar: true,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        },
+                    }).then(function () {
+                        $('#addToKartModal').modal('hide');
+                    });
+                }
+            }
+        });
+    }
+});
